@@ -1,8 +1,7 @@
 # Order Purchase System
 
 ## Project Overview
-
-The EDI 850 is a purchase order sent from a buyer to a seller requesting goods or services. 
+- The EDI 850 is a purchase order sent from a buyer to a seller requesting goods or services. 
 The API will support operations such as `Get` and `Post` to manage orders,
 customer, items, suppliers, and shipping details as it is depicted in the EDI 850 purchase order.
 The RESTful API will be built with Spring Boot and MySQL for persistance.
