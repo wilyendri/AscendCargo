@@ -1,5 +1,6 @@
 package com.api.AscendCargo.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
@@ -22,8 +23,10 @@ public class Orders {
     @JoinColumn(name = "shipping_id", referencedColumnName = "id", nullable = false)
     private ShippingDetails shippingDetails;
 
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate date;
 
+    @JsonFormat(pattern = "MM/dd/yyyy")
     private LocalDate deliveryDate;
 
     private String shippingMethod;

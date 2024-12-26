@@ -1,5 +1,6 @@
 package com.api.AscendCargo.controller;
 
+import com.api.AscendCargo.exceptions.ForeignKeyException;
 import com.api.AscendCargo.exceptions.InvalidFormatException;
 import com.api.AscendCargo.exceptions.NotFoundException;
 import com.api.AscendCargo.model.Item;
@@ -48,6 +49,11 @@ public class ItemController {
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<?> handleInvalidFormatException(InvalidFormatException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(ForeignKeyException.class)
+    public ResponseEntity<?> handleForeignKeyException(ForeignKeyException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 }

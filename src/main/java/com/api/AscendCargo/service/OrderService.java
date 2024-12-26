@@ -1,11 +1,16 @@
 package com.api.AscendCargo.service;
 
+import com.api.AscendCargo.exceptions.ForeignKeyException;
 import com.api.AscendCargo.exceptions.InvalidFormatException;
 import com.api.AscendCargo.exceptions.NotFoundException;
 import com.api.AscendCargo.model.Orders;
 import com.api.AscendCargo.repository.OrderRepo;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,12 +45,30 @@ public class OrderService {
             throw new InvalidFormatException("Order number format is invalid");
         }
 
+
+        try
+        {
+            order.setDate(
+                    LocalDate.now()
+            );
+        } catch (DateTimeParseException e)
+        {
+            throw new InvalidFormatException("Date format is invalid. " + e.getMessage());
+        }
+
+
         Optional<Orders> orderNumber = orderRepo.findByOrderNumber(order.getOrderNumber());
         if(orderNumber.isPresent()) {
             throw new NotFoundException("Order number already exists");
         }
 
-        return orderRepo.save(order);
+        try
+        {
+            return orderRepo.save(order);
+        } catch (DataIntegrityViolationException e)
+        {
+            throw new ForeignKeyException("Foreign Key violation: " + e.getMessage());
+        }
     }
 
     private boolean isOrderNumberValid(String orderNumber) {
@@ -66,6 +89,21 @@ public class OrderService {
         }
 
         return false;
+    }
+
+    public boolean setAndValidDate(String date, Orders order)
+    {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        try
+        {
+            LocalDate deliveryDate = LocalDate.parse(date, formatter);
+            order.setDeliveryDate(deliveryDate);
+            return true;
+        } catch (DateTimeParseException e)
+        {
+            return false;
+        }
     }
 
 }

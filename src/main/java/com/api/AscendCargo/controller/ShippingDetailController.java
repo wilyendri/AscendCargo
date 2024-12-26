@@ -1,10 +1,9 @@
 package com.api.AscendCargo.controller;
 
+import com.api.AscendCargo.exceptions.ForeignKeyException;
 import com.api.AscendCargo.exceptions.InvalidFormatException;
 import com.api.AscendCargo.exceptions.NotFoundException;
-import com.api.AscendCargo.model.Orders;
 import com.api.AscendCargo.model.ShippingDetails;
-import com.api.AscendCargo.service.OrderService;
 import com.api.AscendCargo.service.ShippingDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,6 +47,11 @@ public class ShippingDetailController {
 
     @ExceptionHandler(InvalidFormatException.class)
     public ResponseEntity<?> handleInvalidFormatException(InvalidFormatException ex) {
+        return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(ForeignKeyException.class)
+    public ResponseEntity<?> handleForeignKeyException(ForeignKeyException ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
     }
 }

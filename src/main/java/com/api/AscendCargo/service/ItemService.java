@@ -1,10 +1,12 @@
 package com.api.AscendCargo.service;
 
+import com.api.AscendCargo.exceptions.ForeignKeyException;
 import com.api.AscendCargo.exceptions.InvalidFormatException;
 import com.api.AscendCargo.exceptions.NotFoundException;
 import com.api.AscendCargo.model.Item;
 import com.api.AscendCargo.repository.ItemRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -43,7 +45,13 @@ public class ItemService {
             throw new NotFoundException("Item already exists");
         }
 
-        return itemRepo.save(item);
+        try
+        {
+            return itemRepo.save(item);
+        }  catch (DataIntegrityViolationException e)
+        {
+            throw new ForeignKeyException("Foreign Key violation.");
+        }
     }
 
     private boolean isSkuValid(String sku)

@@ -1,9 +1,11 @@
 package com.api.AscendCargo.service;
 
+import com.api.AscendCargo.exceptions.ForeignKeyException;
 import com.api.AscendCargo.exceptions.NotFoundException;
 import com.api.AscendCargo.model.Supplier;
 import com.api.AscendCargo.repository.SupplierRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -37,6 +39,13 @@ public class SupplierService {
         {
             throw new NotFoundException("Supplier already exists");
         }
-        return supplierRepo.save(supplier);
+
+        try
+        {
+            return supplierRepo.save(supplier);
+        } catch (DataIntegrityViolationException e)
+        {
+            throw new ForeignKeyException("Foreign Key violation.");
+        }
     }
 }

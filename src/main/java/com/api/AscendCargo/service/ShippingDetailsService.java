@@ -1,10 +1,12 @@
 package com.api.AscendCargo.service;
 
+import com.api.AscendCargo.exceptions.ForeignKeyException;
 import com.api.AscendCargo.exceptions.NotFoundException;
 import com.api.AscendCargo.model.ShippingDetails;
 import com.api.AscendCargo.model.Supplier;
 import com.api.AscendCargo.repository.ShippingDetailsRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -38,6 +40,12 @@ public class ShippingDetailsService {
             throw new NotFoundException("Supplier already exists");
         }
 
-        return shippingDetailsRepo.save(shippingDetails);
+        try
+        {
+            return shippingDetailsRepo.save(shippingDetails);
+        } catch (DataIntegrityViolationException e)
+        {
+            throw new ForeignKeyException("Foreign Key violation.");
+        }
     }
 }
